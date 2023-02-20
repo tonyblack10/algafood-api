@@ -1,12 +1,18 @@
 package com.algaworks.algafood.domain.service;
 
-import com.algaworks.algafood.domain.exception.NegocioException;
-import com.algaworks.algafood.domain.exception.PedidoNaoEncontradoException;
-import com.algaworks.algafood.domain.model.*;
-import com.algaworks.algafood.domain.repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.exception.PedidoNaoEncontradoException;
+import com.algaworks.algafood.domain.model.Cidade;
+import com.algaworks.algafood.domain.model.FormaPagamento;
+import com.algaworks.algafood.domain.model.Pedido;
+import com.algaworks.algafood.domain.model.Produto;
+import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.model.Usuario;
+import com.algaworks.algafood.domain.repository.PedidoRepository;
 
 @Service
 public class EmissaoPedidoService {
@@ -28,11 +34,6 @@ public class EmissaoPedidoService {
 
     @Autowired
     private CadastroFormaPagamentoService cadastroFormaPagamento;
-
-    public Pedido buscarOuFalhar(Long pedidoId) {
-        return pedidoRepository.findById(pedidoId)
-                .orElseThrow(() -> new PedidoNaoEncontradoException(pedidoId));
-    }
 
     @Transactional
     public Pedido emitir(Pedido pedido) {
@@ -72,4 +73,10 @@ public class EmissaoPedidoService {
             item.setPrecoUnitario(produto.getPreco());
         });
     }
+
+    public Pedido buscarOuFalhar(String codigoPedido) {
+        return pedidoRepository.findByCodigo(codigoPedido)
+                .orElseThrow(() -> new PedidoNaoEncontradoException(codigoPedido));
+    }
+
 }
