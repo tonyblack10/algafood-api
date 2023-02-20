@@ -5,7 +5,18 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -58,18 +69,10 @@ public class Pedido {
 		getItens().forEach(ItemPedido::calcularPrecoTotal);
 
 		this.subtotal = getItens().stream()
-				.map(item -> item.getPrecoTotal())
+				.map(ItemPedido::getPrecoTotal)
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 		this.valorTotal = this.subtotal.add(this.taxaFrete);
-	}
-
-	public void definirFrete() {
-		setTaxaFrete(getRestaurante().getTaxaFrete());
-	}
-
-	public void atribuirPedidoAosItens() {
-		getItens().forEach(item -> item.setPedido(this));
 	}
 
 }
