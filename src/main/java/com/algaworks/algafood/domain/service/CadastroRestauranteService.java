@@ -1,11 +1,17 @@
 package com.algaworks.algafood.domain.service;
 
-import com.algaworks.algafood.domain.model.*;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
+import com.algaworks.algafood.domain.model.Cidade;
+import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.FormaPagamento;
+import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 
 @Service
@@ -55,19 +61,13 @@ public class CadastroRestauranteService {
 	}
 
 	@Transactional
-	public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
-		Restaurante restaurante = buscarOuFalhar(restauranteId);
-		FormaPagamento formaPagamento = cadastroFormaPagamento.buscarOuFalhar(formaPagamentoId);
-
-		restaurante.removerFormaPagamento(formaPagamento);
+	public void ativar(List<Long> restauranteIds) {
+		restauranteIds.forEach(this::ativar);
 	}
 
 	@Transactional
-	public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
-		Restaurante restaurante = buscarOuFalhar(restauranteId);
-		FormaPagamento formaPagamento = cadastroFormaPagamento.buscarOuFalhar(formaPagamentoId);
-
-		restaurante.adicionarFormaPagamento(formaPagamento);
+	public void inativar(List<Long> restauranteIds) {
+		restauranteIds.forEach(this::inativar);
 	}
 
 	@Transactional
@@ -84,9 +84,20 @@ public class CadastroRestauranteService {
 		restauranteAtual.fechar();
 	}
 
-	public Restaurante buscarOuFalhar(Long restauranteId) {
-		return restauranteRepository.findById(restauranteId)
-				.orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
+	@Transactional
+	public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		FormaPagamento formaPagamento = cadastroFormaPagamento.buscarOuFalhar(formaPagamentoId);
+
+		restaurante.removerFormaPagamento(formaPagamento);
+	}
+
+	@Transactional
+	public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		FormaPagamento formaPagamento = cadastroFormaPagamento.buscarOuFalhar(formaPagamentoId);
+
+		restaurante.adicionarFormaPagamento(formaPagamento);
 	}
 
 	@Transactional
@@ -103,6 +114,11 @@ public class CadastroRestauranteService {
 		Usuario usuario = cadastroUsuario.buscarOuFalhar(usuarioId);
 
 		restaurante.adicionarResponsavel(usuario);
+	}
+
+	public Restaurante buscarOuFalhar(Long restauranteId) {
+		return restauranteRepository.findById(restauranteId)
+				.orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
 	}
 
 }
