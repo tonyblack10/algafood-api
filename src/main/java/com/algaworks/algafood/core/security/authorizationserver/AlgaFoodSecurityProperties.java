@@ -16,6 +16,6 @@ import javax.validation.constraints.NotBlank;
 public class AlgaFoodSecurityProperties {
 
     @NotBlank
-    private String providedUrl;
+    private String providerUrl;
 
 }
