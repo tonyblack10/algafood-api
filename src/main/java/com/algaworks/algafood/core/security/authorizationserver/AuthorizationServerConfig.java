@@ -54,7 +54,8 @@ public class AuthorizationServerConfig {
     public SecurityFilterChain authFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
-        return http.formLogin(Customizer.withDefaults()).build();
+        return http.formLogin(customizer -> customizer.loginPage("/login"))
+                .build();
     }
 
     @Bean
