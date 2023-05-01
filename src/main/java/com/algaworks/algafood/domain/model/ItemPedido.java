@@ -49,5 +49,5 @@ public class ItemPedido {
 
 		this.setPrecoTotal(precoUnitario.multiply(new BigDecimal(quantidade)));
 	}
-
+	
 }
